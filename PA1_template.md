@@ -2,6 +2,8 @@
 
 ## Initial setup
 
+Firstly, we setup R locales to English and load necessary libraries for plots.
+
 
 ```r
 Sys.setlocale("LC_TIME", "C")
@@ -11,13 +13,50 @@ library(gridExtra)
 
 ## Loading and preprocessing the data
 
+Secondly, we load the data, change a type of *date* attribute to *Date*.
+
 
 ```r
 dt = read.csv("activity.csv")
 dt$date = as.Date(dt$date)
 ```
 
+Here is short summary of the data:
+
+
+```r
+summary(dt)
+```
+
+```
+##      steps             date               interval     
+##  Min.   :  0.00   Min.   :2012-10-01   Min.   :   0.0  
+##  1st Qu.:  0.00   1st Qu.:2012-10-16   1st Qu.: 588.8  
+##  Median :  0.00   Median :2012-10-31   Median :1177.5  
+##  Mean   : 37.38   Mean   :2012-10-31   Mean   :1177.5  
+##  3rd Qu.: 12.00   3rd Qu.:2012-11-15   3rd Qu.:1766.2  
+##  Max.   :806.00   Max.   :2012-11-30   Max.   :2355.0  
+##  NA's   :2304
+```
+
+```r
+head(dt)
+```
+
+```
+##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
+## 6    NA 2012-10-01       25
+```
+
 ## What is mean total number of steps taken per day?
+
+We aggregate steps per day, taking into account possible *NA*s in *step*
+attribute
 
 
 ```r
@@ -25,7 +64,23 @@ steps_per_day = aggregate(dt$steps,
                           by=list(date=dt$date), 
                           FUN=function(steps,...){sum(steps, na.rm=T,...)})
 colnames(steps_per_day) = c("date", "steps")
+head(steps_per_day)
+```
 
+```
+##         date steps
+## 1 2012-10-01     0
+## 2 2012-10-02   126
+## 3 2012-10-03 11352
+## 4 2012-10-04 12116
+## 5 2012-10-05 13294
+## 6 2012-10-06 15420
+```
+
+After that we can plot number of steps per day.
+
+
+```r
 p = ggplot(steps_per_day, aes(x=date, y=steps)) + 
     geom_bar(stat="identity") +
     scale_x_date(breaks="1 day",
@@ -39,6 +94,8 @@ print(p)
 ```
 
 ![](PA1_template_files/figure-html/plot_steps_per_day-1.png) 
+
+The mean and median total number of steps taken per day are reported below.
 
 
 ```r

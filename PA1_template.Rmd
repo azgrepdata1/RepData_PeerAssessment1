@@ -7,6 +7,8 @@ output:
 
 ## Initial setup
 
+Firstly, we setup R locales to English and load necessary libraries for plots.
+
 ```{r echo=TRUE, results='hide', message=FALSE, warning=FALSE}
 Sys.setlocale("LC_TIME", "C")
 library(ggplot2)
@@ -15,19 +17,36 @@ library(gridExtra)
 
 ## Loading and preprocessing the data
 
+Secondly, we load the data, change a type of *date* attribute to *Date*.
+
 ```{r echo=TRUE}
 dt = read.csv("activity.csv")
 dt$date = as.Date(dt$date)
 ```
 
+Here is short summary of the data:
+
+```{r echo=TRUE}
+summary(dt)
+head(dt)
+```
+
 ## What is mean total number of steps taken per day?
 
-```{r plot_steps_per_day, fig.width=10, fig.height=4, echo=TRUE}
+We aggregate steps per day, taking into account possible *NA*s in *step*
+attribute
+
+```{r echo=TRUE}
 steps_per_day = aggregate(dt$steps, 
                           by=list(date=dt$date), 
                           FUN=function(steps,...){sum(steps, na.rm=T,...)})
 colnames(steps_per_day) = c("date", "steps")
+head(steps_per_day)
+```
 
+After that we can plot number of steps per day.
+
+```{r plot_steps_per_day, fig.width=10, fig.height=4, echo=TRUE}
 p = ggplot(steps_per_day, aes(x=date, y=steps)) + 
     geom_bar(stat="identity") +
     scale_x_date(breaks="1 day",
@@ -39,6 +58,8 @@ p = ggplot(steps_per_day, aes(x=date, y=steps)) +
 
 print(p)
 ```
+
+The mean and median total number of steps taken per day are reported below.
 
 ```{r echo=TRUE}
 mean(steps_per_day$steps)
