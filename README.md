@@ -1,2 +1,2 @@
-RepData_PeerAssessment1
+RepData PeerAssessment1
 =======================
